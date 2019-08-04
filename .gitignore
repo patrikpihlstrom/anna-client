@@ -1,3 +1,7 @@
 .idea
 venv
 __pycache__
+anna_client.egg-info/
+build/
+dist/
+
