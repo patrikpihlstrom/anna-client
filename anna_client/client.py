@@ -1,5 +1,6 @@
 from graphqlclient import GraphQLClient, json
 import requests
+import os
 
 from anna_client import graphql
 
@@ -11,6 +12,8 @@ class Client(GraphQLClient):
 
 	def __init__(self, endpoint):
 		super().__init__(endpoint)
+		if 'ANNA_TOKEN' in os.environ:
+			super().inject_token(os.environ['ANNA_TOKEN'])
 
 	def query(self, query: str, variables: str) -> list:
 		return json.loads(super().execute(query=query, variables=variables))
@@ -51,10 +54,10 @@ class Client(GraphQLClient):
 		return response
 
 	def get_tasks(self, namespace: str) -> tuple:
-		response = requests.get(str(self.endpoint).replace('graphql', 'task/' + namespace))
+		response = requests.get('https://task.annahub.se/?namespace=' + namespace, headers={'authorization': self.token})
 		if response.status_code is not 200:
 			raise ValueError(response.text)
-		response = json.loads(json.loads(response.text))
+		response = json.loads(response.text)
 		if len(response) is not 2:
 			raise ValueError
 		return response[0], response[1]
