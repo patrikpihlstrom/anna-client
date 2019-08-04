@@ -1,5 +1,7 @@
 import unittest
 
+from . import client
+
 
 class TestCreateJobs(unittest.TestCase):
 	def setUp(self) -> None:
@@ -7,6 +9,16 @@ class TestCreateJobs(unittest.TestCase):
 
 	def tearDown(self) -> None:
 		pass
+
+	def test_raises_type_error(self):
+		with self.assertRaises(TypeError):
+			client.create_jobs(data=[{}])
+		with self.assertRaises(TypeError):
+			client.create_jobs(data=[{'driver': ''}])
+		with self.assertRaises(TypeError):
+			client.create_jobs(data=[{'site': ''}])
+		with self.assertRaises(TypeError):
+			client.create_jobs(data=[{'site': 0, 'driver': False}])
 
 	def test_create_one_job(self):
 		pass
