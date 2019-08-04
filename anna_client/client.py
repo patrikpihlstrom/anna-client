@@ -1,4 +1,5 @@
 from graphqlclient import GraphQLClient, json
+import requests
 
 from anna_client import graphql
 
@@ -49,5 +50,11 @@ class Client(GraphQLClient):
 		response = json.loads(super().execute(mutation))
 		return response
 
-	def get_tasks(self, parameters: dict):
-		pass
+	def get_tasks(self, namespace: str) -> tuple:
+		response = requests.get(str(self.endpoint).replace('graphql', 'task/' + namespace))
+		if response.status_code is not 200:
+			raise ValueError(response.text)
+		response = json.loads(json.loads(response.text))
+		if len(response) is not 2:
+			raise ValueError
+		return response[0], response[1]
