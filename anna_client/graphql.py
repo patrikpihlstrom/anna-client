@@ -1,6 +1,6 @@
 from typing import Union
 
-STATUS = ('PENDING', 'STARTING', 'RUNNING', 'DONE', 'ERROR', 'STOPPED')
+STATUS = ('PENDING', 'RESERVED', 'STARTING', 'RUNNING', 'DONE', 'ERROR', 'STOPPED')
 
 
 def get_create_mutations(data: list) -> str:
