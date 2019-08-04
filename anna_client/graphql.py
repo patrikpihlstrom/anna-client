@@ -53,3 +53,10 @@ def get_update_mutation(where: dict = None, data: dict = None) -> str:
 	for status in STATUS:
 		data = data.replace('"' + status + '"', status)
 	return 'mutation{updateManyJobs(where:' + where + ',data:' + data + '){count}}'
+
+
+def get_reserve_jobs_mutation(worker: str, job_ids: tuple) -> str:
+	if worker is None or worker == '' or len(job_ids) < 1:
+		raise TypeError('supply a worker and a count')
+	return 'mutation{updateManyJobs(where:{id_in:["' + '","'.join(
+		job_ids) + '"],worker:null,status:PENDING},data:{worker:"' + worker + '",status:RESERVED}){count}}'

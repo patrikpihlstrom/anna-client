@@ -1,7 +1,7 @@
 import unittest
 
 from . import client
-from anna_client import util
+from anna_client import graphql
 
 
 class TestGetJobs(unittest.TestCase):
@@ -12,11 +12,11 @@ class TestGetJobs(unittest.TestCase):
 		pass
 
 	def test_get_jobs_query(self):
-		query = util.get_jobs_query(where={}, fields=('id',))
+		query = graphql.get_jobs_query(where={}, fields=('id',))
 		self.assertEqual('{jobs(where:{}){id}}', query)
-		query = util.get_jobs_query(where={'driver': 'firefox'}, fields=('id',))
+		query = graphql.get_jobs_query(where={'driver': 'firefox'}, fields=('id',))
 		self.assertEqual('{jobs(where:{driver:"firefox"}){id}}', query)
-		query = util.get_jobs_query(where={'driver_in': ('firefox', 'chrome')}, fields=('id',))
+		query = graphql.get_jobs_query(where={'driver_in': ('firefox', 'chrome')}, fields=('id',))
 		self.assertEqual('{jobs(where:{driver_in:["firefox","chrome"]}){id}}', query)
 
 	def test_get_all_jobs(self):

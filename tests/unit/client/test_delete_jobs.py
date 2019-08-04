@@ -2,7 +2,7 @@ import unittest
 
 from . import client
 
-from anna_client import util
+from anna_client import graphql
 
 
 class TestDeleteJobs(unittest.TestCase):
@@ -13,9 +13,9 @@ class TestDeleteJobs(unittest.TestCase):
 		pass
 
 	def test_get_delete_mutation(self):
-		mutation = util.get_delete_mutation(where={'driver': 'firefox'})
+		mutation = graphql.get_delete_mutation(where={'driver': 'firefox'})
 		self.assertEqual('mutation{deleteManyJobs(where:{driver:"firefox"}){count}}', mutation)
-		mutation = util.get_delete_mutation(where={})
+		mutation = graphql.get_delete_mutation(where={})
 		self.assertEqual('mutation{deleteManyJobs(where:{}){count}}', mutation)
 
 	def test_delete_all(self):

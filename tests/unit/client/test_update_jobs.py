@@ -1,7 +1,7 @@
 import unittest
 
 from . import client
-from anna_client import util
+from anna_client import graphql
 
 
 class TestUpdateJobs(unittest.TestCase):
@@ -13,8 +13,8 @@ class TestUpdateJobs(unittest.TestCase):
 
 	def test_get_update_mutation(self):
 		job_id = client.create_jobs(data=[{'driver': 'firefox', 'site': 'test'}])[0]
-		mutation = util.get_update_mutation(where={'id': job_id}, data={'status': 'STARTING'})
-		self.assertEqual('mutation{updateManyJobs(where:{id:"' + job_id + '"},data:{status:"STARTING"}){count}}',
+		mutation = graphql.get_update_mutation(where={'id': job_id}, data={'status': 'STARTING'})
+		self.assertEqual('mutation{updateManyJobs(where:{id:"' + job_id + '"},data:{status:STARTING}){count}}',
 						 mutation)
 
 	def test_update_one_job_one_field(self):

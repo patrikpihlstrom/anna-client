@@ -1,7 +1,7 @@
 import unittest
 
 from . import client
-from anna_client import util
+from anna_client import graphql
 
 
 class TestCreateJobs(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestCreateJobs(unittest.TestCase):
 	def test_get_create_mutations(self):
 		data = [{'driver': 'firefox', 'site': 'test'}, {'driver': 'chrome', 'site': 'test'}]
 		i = 0
-		for mutation in util.get_create_mutations(data):
+		for mutation in graphql.get_create_mutations(data):
 			self.assertEqual(
 				'mutation{createJob(data:{driver:"' + data[i]['driver'] + '",site:"' + data[i]['site'] + '"}){id}}',
 				mutation)
