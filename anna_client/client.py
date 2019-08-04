@@ -24,11 +24,13 @@ class Client(GraphQLClient):
 			return response['jobs']
 		return response
 
-	def create_jobs(self, data: list) -> list:
-		response = []
-		for mutation in self.get_create_mutation(data):
-			response.append(json.loads(super().execute(mutation)))
-		return response
+	def create_jobs(self, data: list) -> tuple:
+		ids = []
+		for mutation in self.get_create_mutations(data):
+			response = json.loads(super().execute(mutation))
+			if 'createJob' in response and 'id' in response['createJob']:
+				ids.append(response['createJob']['id'])
+		return tuple(ids)
 
 	def delete_jobs(self, parameters: dict):
 		pass
@@ -43,16 +45,19 @@ class Client(GraphQLClient):
 		pass
 
 	@staticmethod
-	def get_create_mutation(data: list) -> str:
+	def get_create_mutations(data: list) -> str:
 		if len(data) <= 0:
 			raise TypeError('provide at least one dict with a driver & a site')
-		for d in data:
-			if not isinstance(d, dict):
+		for mutation in data:
+			if not isinstance(mutation, dict):
 				raise TypeError('parameter data must be a list of dicts')
-			if 'site' not in d or 'driver' not in d or not isinstance(d['site'], str) or not isinstance(d['driver'],
-																										str):
+			if 'site' not in mutation or 'driver' not in mutation or not isinstance(mutation['site'], str) \
+					or not isinstance(mutation['driver'], str):
 				raise TypeError('you must specify a driver & a site')
-		return ''
+		for mutation in data:
+			parts = ','.join(list(Client.get_key_val_str(key=key, val=val) for key, val in mutation.items()))
+			mutation = 'mutation{createJob(data:{' + parts + '}){id}}'
+			yield mutation
 
 	@staticmethod
 	def get_key_val_str(key: str, val: Union[tuple, list, str]) -> str:

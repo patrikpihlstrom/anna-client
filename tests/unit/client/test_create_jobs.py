@@ -20,14 +20,28 @@ class TestCreateJobs(unittest.TestCase):
 		with self.assertRaises(TypeError):
 			client.create_jobs(data=[{'site': 0, 'driver': False}])
 
+	def test_get_create_mutations(self):
+		data = [{'driver': 'firefox', 'site': 'test'}, {'driver': 'chrome', 'site': 'test'}]
+		i = 0
+		for mutation in client.get_create_mutations(data):
+			self.assertEqual(
+				'mutation{createJob(data:{driver:"' + data[i]['driver'] + '",site:"' + data[i]['site'] + '"}){id}}',
+				mutation)
+			i = i + 1
+		self.assertEqual(len(data), i)
+
 	def test_create_one_job(self):
-		pass
+		count = len(client.get_jobs())
+		response = client.create_jobs(data=[{'driver': 'firefox', 'site': 'test'}])
+		self.assertEqual(count + 1, len(client.get_jobs()))
+		self.assertIsInstance(response, tuple)
+		for id in response:
+			self.assertIsInstance(id, str)
 
-	def test_create_two_jobs_one_site_two_drivers(self):
-		pass
-
-	def test_create_two_jobs_two_sites_one_driver(self):
-		pass
-
-	def test_create_four_jobs_two_sites_two_driver(self):
-		pass
+	def test_create_two_jobs(self):
+		count = len(client.get_jobs())
+		response = client.create_jobs(data=[{'driver': 'firefox', 'site': 'test'}, {'driver': 'chrome', 'site': 'test'}])
+		self.assertEqual(count + 2, len(client.get_jobs()))
+		self.assertIsInstance(response, tuple)
+		for id in response:
+			self.assertIsInstance(id, str)
