@@ -1,5 +1,7 @@
 from typing import Union
 
+STATUS = ('PENDING', 'STARTING', 'RUNNING', 'DONE', 'ERROR', 'STOPPED')
+
 
 def get_create_mutations(data: list) -> str:
 	if len(data) <= 0:
@@ -39,3 +41,15 @@ def get_delete_mutation(where: dict = None) -> str:
 	parts = (get_key_val_str(key=key, val=val) for key, val in where.items())
 	where = '{' + ','.join(parts) + '}'
 	return 'mutation{deleteManyJobs(where:' + where + '){count}}'
+
+
+def get_update_mutation(where: dict = None, data: dict = None) -> str:
+	parts = (
+		tuple(get_key_val_str(key=key, val=val) for key, val in where.items()),
+		tuple(get_key_val_str(key=key, val=val) for key, val in data.items())
+	)
+	where = '{' + ','.join(parts[0]) + '}'
+	data = str('{' + ','.join(parts[1]) + '}')
+	for status in STATUS:
+		data = data.replace('"' + status + '"', status)
+	return 'mutation{updateManyJobs(where:' + where + ',data:' + data + '){count}}'

@@ -14,7 +14,7 @@ class Client(GraphQLClient):
 	def query(self, query: str, variables: str) -> list:
 		return json.loads(super().execute(query=query, variables=variables))
 
-	def get_jobs(self, where=None, fields: tuple = ('id',)) -> list:
+	def get_jobs(self, where: dict = None, fields: tuple = ('id',)) -> list:
 		if where is None:
 			where = {}
 		query = util.get_jobs_query(where=where, fields=fields)
@@ -39,8 +39,10 @@ class Client(GraphQLClient):
 		response = json.loads(super().execute(mutation))
 		return response
 
-	def update_jobs(self, parameters: dict):
-		pass
+	def update_jobs(self, where: dict = None, data: dict = None) -> tuple:
+		mutation = util.get_update_mutation(where=where, data=data)
+		response = json.loads(super().execute(mutation))
+		return response
 
 	def reserve_jobs(self, parameters: dict):
 		pass
