@@ -1,7 +1,7 @@
 ## anna client
 
 ### setup
-```$ pip install anna_client```
+```$ pip install anna-client```
 
 ### usage
 #### initialization
