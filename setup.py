@@ -5,7 +5,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
 	name='anna-client',
-	version='1.1.0',
+	version='1.1.1',
 	author='Patrik Pihlstrom',
 	author_email='patrik.pihlstrom@gmail.com',
 	url='https://github.com/patrikpihlstrom/anna-client',
