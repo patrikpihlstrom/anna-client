@@ -31,3 +31,11 @@ def get_jobs_query(where: dict, fields: tuple) -> str:
 	parts = (get_key_val_str(key=key, val=val) for key, val in where.items())
 	where = '{' + ','.join(parts) + '}'
 	return '{jobs(where:' + where + '){' + ','.join(fields) + '}}'
+
+
+def get_delete_mutation(where: dict = None) -> str:
+	if where is None:
+		where = {}
+	parts = (get_key_val_str(key=key, val=val) for key, val in where.items())
+	where = '{' + ','.join(parts) + '}'
+	return 'mutation{deleteManyJobs(where:' + where + '){count}}'

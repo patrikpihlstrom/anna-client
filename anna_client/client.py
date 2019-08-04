@@ -12,7 +12,7 @@ class Client(GraphQLClient):
 		super().__init__(endpoint)
 
 	def query(self, query: str, variables: str) -> list:
-		return super().execute(query=query, variables=variables)
+		return json.loads(super().execute(query=query, variables=variables))
 
 	def get_jobs(self, where=None, fields: tuple = ('id',)) -> list:
 		if where is None:
@@ -32,8 +32,12 @@ class Client(GraphQLClient):
 				ids.append(response['createJob']['id'])
 		return tuple(ids)
 
-	def delete_jobs(self, parameters: dict):
-		pass
+	def delete_jobs(self, where: dict = None) -> tuple:
+		if where is None:
+			where = {}
+		mutation = util.get_delete_mutation(where=where)
+		response = json.loads(super().execute(mutation))
+		return response
 
 	def update_jobs(self, parameters: dict):
 		pass
