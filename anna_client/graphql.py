@@ -14,6 +14,8 @@ def get_create_mutations(data: list) -> str:
 			raise TypeError('you must specify a driver & a site')
 	for mutation in data:
 		parts = ','.join(list(get_key_val_str(key=key, val=val) for key, val in mutation.items()))
+		for status in STATUS:
+			parts = parts.replace('"' + status + '"', status)
 		mutation = 'mutation{createJob(data:{' + parts + '}){id}}'
 		yield mutation
 
@@ -32,6 +34,8 @@ def get_key_val_str(key: str, val: Union[tuple, list, str]) -> str:
 def get_jobs_query(where: dict, fields: tuple) -> str:
 	parts = (get_key_val_str(key=key, val=val) for key, val in where.items())
 	where = '{' + ','.join(parts) + '}'
+	for status in STATUS:
+		where = where.replace('"' + status + '"', status)
 	return '{jobs(where:' + where + '){' + ','.join(fields) + '}}'
 
 
@@ -40,6 +44,8 @@ def get_delete_mutation(where: dict = None) -> str:
 		where = {}
 	parts = (get_key_val_str(key=key, val=val) for key, val in where.items())
 	where = '{' + ','.join(parts) + '}'
+	for status in STATUS:
+		where = where.replace('"' + status + '"', status)
 	return 'mutation{deleteManyJobs(where:' + where + '){count}}'
 
 
