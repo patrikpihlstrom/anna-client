@@ -20,15 +20,17 @@ def get_create_mutations(data: list) -> str:
 		yield mutation
 
 
-def get_key_val_str(key: str, val: Union[tuple, list, str]) -> str:
+def get_key_val_str(key: str, val: Union[tuple, list, str, int]) -> str:
 	if not isinstance(key, str):
 		raise TypeError('key must be a string')
 	if isinstance(val, str):
 		return key + ':"' + val + '"'
 	elif isinstance(val, tuple) or isinstance(val, list):
 		return key + ':["' + '","'.join(val) + '"]'
+	elif isinstance(val, int):
+		return key + ':' + str(val)
 	else:
-		raise TypeError('val must be a tuple, list or string')
+		raise TypeError('val must be a tuple, list, int or string')
 
 
 def get_jobs_query(where: dict, fields: tuple) -> str:
