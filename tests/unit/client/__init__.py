@@ -3,7 +3,11 @@ import os
 from anna_client.client import Client
 
 
-client = Client(endpoint='https://api.annahub.se')
+host = 'https://api.annahub.dev'
+if 'ANNA_HOST' in os.environ:
+	host = os.environ['ANNA_HOST']
+
+client = Client(endpoint=host)
 
 if 'ANNA_TOKEN' in os.environ:
 	client.inject_token(os.environ['ANNA_TOKEN'])

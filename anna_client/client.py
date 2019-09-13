@@ -18,7 +18,7 @@ class Client(GraphQLClient):
 	def query(self, query: str, variables: str) -> list:
 		return json.loads(super().execute(query=query, variables=variables))
 
-	def get_jobs(self, where: dict = None, fields: tuple = ('id',)) -> list:
+	def get_jobs(self, where: dict = None, fields: tuple = ('id',), limit: int = 0) -> list:
 		if where is None:
 			where = {}
 		query = graphql.get_jobs_query(where=where, fields=fields)
@@ -54,7 +54,7 @@ class Client(GraphQLClient):
 		return response
 
 	def get_tasks(self, namespace: str) -> tuple:
-		response = requests.get('https://task.annahub.se/?namespace=' + namespace, headers={'authorization': self.token})
+		response = requests.get('https://task.annahub.dev/?namespace=' + namespace, headers={'authorization': self.token})
 		if response.status_code is not 200:
 			raise ValueError(response.text)
 		response = json.loads(response.text)

@@ -19,6 +19,16 @@ class TestGetJobs(unittest.TestCase):
 		query = graphql.get_jobs_query(where={'driver_in': ('firefox', 'chrome')}, fields=('id',))
 		self.assertEqual('{jobs(where:{driver_in:["firefox","chrome"]}){id}}', query)
 
+	def test_get_jobs_query_limit(self):
+		query = graphql.get_jobs_query(where={}, fields=('id',), limit=1)
+		self.assertEqual('{jobs(where:{} first:1){id}}', query)
+		query = graphql.get_jobs_query(where={}, fields=('id',), limit=10000)
+		self.assertEqual('{jobs(where:{} first:10000){id}}', query)
+		query = graphql.get_jobs_query(where={}, fields=('id',), limit=0)
+		self.assertEqual('{jobs(where:{}){id}}', query)
+		query = graphql.get_jobs_query(where={}, fields=('id',), limit=-10000)
+		self.assertEqual('{jobs(where:{}){id}}', query)
+
 	def test_get_all_jobs(self):
 		jobs = client.get_jobs(where={}, fields=['id', 'driver', 'site', 'status'])
 		self.assertIsInstance(jobs, list)

@@ -33,11 +33,13 @@ def get_key_val_str(key: str, val: Union[tuple, list, str, int]) -> str:
 		raise TypeError('val must be a tuple, list, int or string')
 
 
-def get_jobs_query(where: dict, fields: tuple) -> str:
+def get_jobs_query(where: dict, fields: tuple, limit: int = 0) -> str:
 	parts = (get_key_val_str(key=key, val=val) for key, val in where.items())
 	where = '{' + ','.join(parts) + '}'
 	for status in STATUS:
 		where = where.replace('"' + status + '"', status)
+	if limit > 0:
+		where += ' first:' + str(limit)
 	return '{jobs(where:' + where + '){' + ','.join(fields) + '}}'
 
 
