@@ -38,6 +38,18 @@ class TestGetJobs(unittest.TestCase):
 			self.assertIn('site', job)
 			self.assertIn('status', job)
 
+	def test_get_one_job(self):
+		datum = {'driver': 'chrome', 'site': 'test'}
+		client.create_jobs(data=[datum, datum])
+		jobs = client.get_jobs(where={}, fields=['id', 'driver', 'site', 'status'], limit=1)
+		self.assertIsInstance(jobs, list)
+		self.assertTrue(len(jobs) < 2)
+		for job in jobs:
+			self.assertIn('id', job)
+			self.assertIn('driver', job)
+			self.assertIn('site', job)
+			self.assertIn('status', job)
+
 	def test_get_all_firefox_jobs(self):
 		jobs = client.get_jobs(where={'driver': 'firefox'}, fields=['id', 'driver'])
 		self.assertIsInstance(jobs, list)
