@@ -21,7 +21,7 @@ class Client(GraphQLClient):
 	def get_jobs(self, where: dict = None, fields: tuple = ('id',), limit: int = 0) -> list:
 		if where is None:
 			where = {}
-		query = graphql.get_jobs_query(where=where, fields=fields)
+		query = graphql.get_jobs_query(where=where, fields=fields, limit=limit)
 		response = super().execute(query=query)
 		response = json.loads(response)
 		if 'jobs' in response:
