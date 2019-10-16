@@ -23,9 +23,13 @@ def get_create_mutations(data: list) -> str:
 def get_key_val_str(key: str, val: Union[tuple, list, str, int]) -> str:
 	if not isinstance(key, str):
 		raise TypeError('key must be a string')
+	if isinstance(val, str) and ',' in val:
+		val = val.split(',')
 	if isinstance(val, str):
 		return key + ':"' + val + '"'
 	elif isinstance(val, tuple) or isinstance(val, list):
+		if not key.endswith('in'):
+			return key + '_in:["' + '","'.join(val) + '"]'
 		return key + ':["' + '","'.join(val) + '"]'
 	elif isinstance(val, int):
 		return key + ':' + str(val)
@@ -34,6 +38,16 @@ def get_key_val_str(key: str, val: Union[tuple, list, str, int]) -> str:
 
 
 def get_jobs_query(where: dict, fields: tuple, limit: int = 0) -> str:
+	parts = (get_key_val_str(key=key, val=val) for key, val in where.items())
+	where = '{' + ','.join(parts) + '}'
+	for status in STATUS:
+		where = where.replace('"' + status + '"', status)
+	if limit > 0:
+		where += ' first:' + str(limit)
+	return '{jobs(where:' + where + '){' + ','.join(fields) + '}}'
+
+
+def get_jobs_query_(where: dict, fields: tuple, limit: int = 0) -> str:
 	parts = (get_key_val_str(key=key, val=val) for key, val in where.items())
 	where = '{' + ','.join(parts) + '}'
 	for status in STATUS:

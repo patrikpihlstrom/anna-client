@@ -10,8 +10,9 @@ class Client(GraphQLClient):
 	Wrapper around GraphQLClient
 	"""
 
-	def __init__(self, endpoint):
+	def __init__(self, endpoint, task_service_url='https://task.annahub.dev/'):
 		super().__init__(endpoint)
+		self.task_service_url = task_service_url
 		if 'ANNA_TOKEN' in os.environ:
 			super().inject_token(os.environ['ANNA_TOKEN'])
 
@@ -54,7 +55,9 @@ class Client(GraphQLClient):
 		return response
 
 	def get_tasks(self, namespace: str) -> tuple:
-		response = requests.get('https://task.annahub.dev/?namespace=' + namespace, headers={'authorization': self.token})
+		url = self.task_service_url + '?namespace=' + namespace
+		headers = {'authorization': self.token}
+		response = requests.get(url=url, headers=headers)
 		if response.status_code is not 200:
 			raise ValueError(response.text)
 		response = json.loads(response.text)

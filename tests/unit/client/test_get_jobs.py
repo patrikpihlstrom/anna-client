@@ -57,3 +57,22 @@ class TestGetJobs(unittest.TestCase):
 			self.assertIn('id', job)
 			self.assertIn('driver', job)
 			self.assertEqual('firefox', job['driver'])
+
+	def test_get_all_pending_jobs(self):
+		jobs = client.get_jobs(where={'driver': 'firefox', 'status': 'PENDING'}, fields=['id', 'driver', 'status'])
+		self.assertIsInstance(jobs, list)
+		for job in jobs:
+			self.assertIn('id', job)
+			self.assertIn('driver', job)
+			self.assertEqual('firefox', job['driver'])
+			self.assertEqual('PENDING', job['status'])
+
+	def test_get_all_pending_or_running_jobs(self):
+		jobs = client.get_jobs(where={'driver': 'firefox', 'status': 'PENDING,RUNNING'}, fields=['id', 'driver', 'status'])
+		self.assertIsInstance(jobs, list)
+		for job in jobs:
+			self.assertIn('id', job)
+			self.assertIn('driver', job)
+			self.assertEqual('firefox', job['driver'])
+			self.assertTrue(job['status'] in ('PENDING', 'RUNNING'))
+
